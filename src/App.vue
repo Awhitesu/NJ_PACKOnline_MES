@@ -225,14 +225,8 @@ async function buildProduceInListByCodeCreate(): Promise<Array<{ productCode: st
     setGlobalStatus('条码获取成功', 'success')
 
     const mesProductCode = productCode.value.trim()
-    const mesCodes = [...sCodes]
-    if (mesProductCode) {
-      mesCodes.push(mesProductCode)
-      addLog('info', `[报工] ProduceInEntityList 已按要求使用产品条码替代P码: ${mesProductCode}`)
-    } else {
-      mesCodes.push(...pCodes)
-      addLog('warn', '[报工] 产品条码为空，已回退使用P码写入 ProduceInEntityList')
-    }
+    const mesCodes = [...pCodes]
+    if (mesProductCode) mesCodes.push(mesProductCode)
 
     if (!mesCodes.length) {
       testResult.value = 'NG'
@@ -241,6 +235,7 @@ async function buildProduceInListByCodeCreate(): Promise<Array<{ productCode: st
       setGlobalStatus('条码获取失败', 'error')
       return null
     }
+    addLog('info', `[报工] ProduceInEntityList 使用 P码+产品条码: ${mesCodes.join(', ')}`)
     return mesCodes.map((code) => ({ productCode: code, productCount: 1 }))
   } catch (err: any) {
     testResult.value = 'NG'
@@ -1061,36 +1056,21 @@ async function printGeneratedCodesByBarTender() {
   }
 
   setGlobalStatus('正在调用 BarTender 打印...', 'info')
-  const t0 = Date.now()
-  const rec = reactive<ApiRecord>({
-    title: 'BarTender 打印',
-    url: 'http://127.0.0.1:5246/printLabelsByBarTender',
-    status: 'pending',
-    time: new Date().toLocaleTimeString(),
-    reqBody
-  })
-  apiRecords.value.unshift(rec)
 
   try {
     const res = await printLabelsByBarTender(reqBody)
-    rec.duration = Date.now() - t0
-    rec.resBody = res
     if (!res?.success) {
       const msg = res?.message || 'BarTender 返回失败'
-      rec.status = 'error'
       addLog('error', `[打印] 失败: ${msg}`)
       setGlobalStatus('报工完成，打印失败', 'error')
       resultMessage.value = `报工成功，但打印失败: ${msg}`
       return
     }
 
-    rec.status = 'success'
     addLog('success', `[打印] 打印成功，条码数量: ${labels.length}`)
     setGlobalStatus('工步列表获取成功，物料校验通过，条码获取成功，报工完成，打印完成', 'success')
     resultMessage.value = '物料工站流程完成，报工、日志、打印均成功。'
   } catch (err: any) {
-    rec.status = 'error'
-    rec.resBody = err?.message || String(err)
     addLog('error', `[打印] 请求异常: ${err?.message || String(err)}`)
     setGlobalStatus('报工完成，打印失败', 'error')
     resultMessage.value = `报工成功，但打印请求异常: ${err?.message || String(err)}`

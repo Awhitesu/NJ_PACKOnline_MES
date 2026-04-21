@@ -202,16 +202,17 @@ app.MapPost("/printLabelsByBarTender", async (PrintByBarTenderRequest req) =>
         lines.AddRange(validLabels.Select(x => $"{EscapeCsv(x.Code)},{EscapeCsv(x.Type)},{EscapeCsv(x.TypeName)}"));
         await File.WriteAllLinesAsync(req.DatabasePath, lines, new UTF8Encoding(encoderShouldEmitUTF8Identifier: true));
 
-        var args = $"/F=\"{req.TemplatePath}\" /D=\"{req.DatabasePath}\" /P /X";
+        var barTenderArgs = $"/F=\"{req.TemplatePath}\" /D=\"{req.DatabasePath}\" /P /X";
+        var cmdCommand = $"\"{req.BarTenderExePath}\" {barTenderArgs}";
         var psi = new ProcessStartInfo
         {
-            FileName = req.BarTenderExePath,
-            Arguments = args,
+            FileName = "cmd.exe",
+            Arguments = $"/c {cmdCommand}",
             UseShellExecute = false,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
             CreateNoWindow = true,
-            WorkingDirectory = Path.GetDirectoryName(req.TemplatePath) ?? AppContext.BaseDirectory
+            WorkingDirectory = Path.GetDirectoryName(req.BarTenderExePath) ?? AppContext.BaseDirectory
         };
 
         using var process = Process.Start(psi);
@@ -221,7 +222,7 @@ app.MapPost("/printLabelsByBarTender", async (PrintByBarTenderRequest req) =>
             {
                 success = false,
                 message = "BarTender进程启动失败",
-                command = $"{req.BarTenderExePath} {args}",
+                command = $"{psi.FileName} {psi.Arguments}",
                 dataFilePath = req.DatabasePath
             });
         }
@@ -238,7 +239,7 @@ app.MapPost("/printLabelsByBarTender", async (PrintByBarTenderRequest req) =>
             {
                 success = false,
                 message = "BarTender执行超时(120s)",
-                command = $"{req.BarTenderExePath} {args}",
+                command = $"{psi.FileName} {psi.Arguments}",
                 dataFilePath = req.DatabasePath
             });
         }
@@ -252,7 +253,7 @@ app.MapPost("/printLabelsByBarTender", async (PrintByBarTenderRequest req) =>
                 success = false,
                 message = string.IsNullOrWhiteSpace(stderr) ? "BarTender执行失败" : stderr.Trim(),
                 exitCode = process.ExitCode,
-                command = $"{req.BarTenderExePath} {args}",
+                command = $"{psi.FileName} {psi.Arguments}",
                 output = stdout,
                 dataFilePath = req.DatabasePath
             });
@@ -263,7 +264,7 @@ app.MapPost("/printLabelsByBarTender", async (PrintByBarTenderRequest req) =>
             success = true,
             message = "BarTender打印完成",
             exitCode = process.ExitCode,
-            command = $"{req.BarTenderExePath} {args}",
+            command = $"{psi.FileName} {psi.Arguments}",
             output = stdout,
             dataFilePath = req.DatabasePath
         });
