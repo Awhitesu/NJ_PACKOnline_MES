@@ -24,6 +24,10 @@ const DEFAULT_CONFIG: AppConfig = {
   singleMaterialApiUrl: '/mes-api/api/ProduceMessage/SingleCheckInput',
   fullMaterialApiUrl: '/mes-api/api/ProduceMessage/CompleteCheckInput',
   codeCreateApiUrl: 'http://172.25.57.144:8034/api/CodeCreate/ModulePackCodeCreate',
+  mesPushApiUrl: '/mes-push/api/ProduceMessage/PushPackMessageToMes',
+  printApiUrl: 'http://127.0.0.1:5246/printLabels',
+  printerIp: '192.168.0.246',
+  printerPort: 9100,
   technicsProcessCode: 'CTP_P1240',
   technicsProcessName: '',
   userName: 'admin',
@@ -571,7 +575,7 @@ async function fetchRouteList(routeCode: string, workSeqNo: string) {
     url: config.routeApiUrl,
     status: 'pending',
     time: new Date().toLocaleTimeString(),
-    reqBody: { routeCode, workSeqNo }
+    reqBody: { routeCode, workseqNo: workSeqNo }
   })
   apiRecords.value.unshift(rec)
 
@@ -680,8 +684,8 @@ async function handleMaterialComplete(materials: { productCode: string; productC
 async function finalizeProcess() {
   const produceInList = await buildProduceInListByCodeCreate()
   if (!produceInList) return
-  await saveAllLogsToLocal()
   await submitAllDataToMes(produceInList)
+  await saveAllLogsToLocal()
 }
 
 async function submitAllDataToMes(produceInList: Array<{ productCode: string; productCount: number }>) {
@@ -723,7 +727,7 @@ async function submitAllDataToMes(produceInList: Array<{ productCode: string; pr
   const finalPayload = [payload]
   const rec = reactive<ApiRecord>({
     title: 'MES 报工上传',
-    url: '/mes-push/api/ProduceMessage/PushPackMessageToMes',
+    url: config.mesPushApiUrl,
     status: 'pending',
     time: new Date().toLocaleTimeString(),
     reqBody: finalPayload

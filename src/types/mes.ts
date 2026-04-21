@@ -4,6 +4,10 @@ export interface AppConfig {
   singleMaterialApiUrl: string
   fullMaterialApiUrl: string
   codeCreateApiUrl: string
+  mesPushApiUrl: string
+  printApiUrl: string
+  printerIp: string
+  printerPort: number
   technicsProcessCode: string
   technicsProcessName: string
   userName: string
@@ -56,7 +60,7 @@ export interface OrderStatusSelectionState {
 
 export interface GetRouteRequest {
   routeCode: string
-  workSeqNo: string
+  workseqNo: string
 }
 
 export interface RouteStep {
@@ -148,6 +152,25 @@ export interface ModulePackCodeCreateResponse {
   msg?: string
   data?: string[]
   success?: boolean
+}
+
+export interface PrintLabelItem {
+  code: string
+  type: 'S' | 'P'
+  typeName: string
+}
+
+export interface PrintLabelsRequest {
+  printerIp: string
+  printerPort: number
+  labels: PrintLabelItem[]
+  copies?: number
+}
+
+export interface PrintLabelsResponse {
+  success?: boolean
+  message?: string
+  printedCount?: number
 }
 
 export type UserRole = 'admin' | 'operator'

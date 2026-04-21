@@ -68,27 +68,6 @@ function fmt(val: unknown): string {
   return String(val)
 }
 
-function typeLabel(t: number | undefined): string {
-  const map: Record<number, string> = {
-    0: '绑定',
-    1: '工艺',
-    2: '检测',
-    3: '装配',
-    4: '涂胶'
-  }
-  return t !== undefined ? (map[t] ?? `类型${t}`) : '—'
-}
-
-function typeColor(t: number | undefined): string {
-  const colors: Record<number, string> = {
-    0: '#26c6da',
-    1: '#ab47bc',
-    2: '#42a5f5',
-    3: '#66bb6a',
-    4: '#ffa726'
-  }
-  return t !== undefined ? (colors[t] ?? '#78909c') : '#37474f'
-}
 </script>
 
 <template>
@@ -116,8 +95,6 @@ function typeColor(t: number | undefined): string {
             <th style="width: 44px">序</th>
             <th>工步编码</th>
             <th>子步骤名称</th>
-            <th style="width: 80px">步骤类型</th>
-            <th>文档 URL</th>
             <th style="width: 52px">详情</th>
           </tr>
         </thead>
@@ -135,24 +112,6 @@ function typeColor(t: number | undefined): string {
               <td><span class="ws-badge">{{ row.wsIdx + 1 }}</span></td>
               <td class="mono">{{ row.ws.workstepNo ?? row.seqNo }}</td>
               <td class="step-name">{{ row.ws.workstepName ?? row.seqName }}</td>
-              <td>
-                <span
-                  class="type-tag"
-                  :style="{
-                    background: typeColor(row.ws.workstepType) + '22',
-                    color: typeColor(row.ws.workstepType),
-                    borderColor: typeColor(row.ws.workstepType) + '55'
-                  }"
-                >
-                  {{ typeLabel(row.ws.workstepType) }}
-                </span>
-              </td>
-              <td class="doc-cell">
-                <a v-if="row.ws.docUrl" :href="String(row.ws.docUrl)" target="_blank" class="doc-link">
-                  {{ row.ws.docUrl }}
-                </a>
-                <span v-else class="muted">—</span>
-              </td>
               <td class="center">
                 <span v-if="row.hasDetail" class="param-toggle">
                   {{ expandedParams[row.paramKey] ? '▼' : '▶' }}
@@ -164,7 +123,7 @@ function typeColor(t: number | undefined): string {
             </tr>
 
             <tr v-if="row.hasDetail && expandedParams[row.paramKey]" :key="row.paramKey + '-details'" class="param-row">
-              <td colspan="7" class="param-cell">
+              <td colspan="5" class="param-cell">
                 <div v-if="row.hasMaterial" class="param-table-wrap mb-2">
                   <div class="sub-table-title">物料绑定信息</div>
                   <table class="param-table">
@@ -377,33 +336,6 @@ td {
 .step-name {
   color: #e0e6ed;
   font-weight: 500;
-}
-
-.type-tag {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 10px;
-  font-weight: 600;
-  border: 1px solid transparent;
-  white-space: nowrap;
-}
-
-.doc-cell {
-  max-width: 220px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.doc-link {
-  color: #42a5f5;
-  text-decoration: none;
-  font-size: 11px;
-}
-
-.doc-link:hover {
-  text-decoration: underline;
 }
 
 .param-toggle {

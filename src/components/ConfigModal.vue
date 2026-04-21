@@ -44,78 +44,97 @@ function handleCancel() {
         </div>
 
         <div class="modal-body">
-          <div class="field-group">
-            <label>首工序获取工单 API</label>
-            <input v-model="form.orderApiUrl" type="text" class="input-field" />
-          </div>
-
-          <div class="field-group">
-            <label>获取工步 API</label>
-            <input v-model="form.routeApiUrl" type="text" class="input-field" />
-          </div>
-
-          <div class="field-group">
-            <label>单物料校验 API</label>
-            <input v-model="form.singleMaterialApiUrl" type="text" class="input-field" />
-          </div>
-
-          <div class="field-group">
-            <label>全物料校验 API</label>
-            <input v-model="form.fullMaterialApiUrl" type="text" class="input-field" />
-          </div>
-
-          <div class="field-group">
-            <label>获取条码 API</label>
-            <input v-model="form.codeCreateApiUrl" type="text" class="input-field" />
-          </div>
-
-          <div class="field-group">
-            <label>工序代码 (technicsProcessCode)</label>
-            <input v-model="form.technicsProcessCode" type="text" class="input-field" />
-          </div>
-
-          <div class="field-group">
-            <label>工序名称 (technicsProcessName)</label>
-            <input v-model="form.technicsProcessName" type="text" class="input-field" />
-          </div>
-
-          <div class="field-groups-row">
+          <section class="config-section">
+            <div class="section-title">MES 参数设置</div>
             <div class="field-group">
-              <label>用户名 (userName)</label>
-              <input v-model="form.userName" type="text" class="input-field" />
+              <label>首工序获取工单 API</label>
+              <input v-model="form.orderApiUrl" type="text" class="input-field" />
             </div>
             <div class="field-group">
-              <label>用户账号 (userAccount)</label>
-              <input v-model="form.userAccount" type="text" class="input-field" />
+              <label>获取工步 API</label>
+              <input v-model="form.routeApiUrl" type="text" class="input-field" />
             </div>
-          </div>
+            <div class="field-group">
+              <label>单物料校验 API</label>
+              <input v-model="form.singleMaterialApiUrl" type="text" class="input-field" />
+            </div>
+            <div class="field-group">
+              <label>全物料校验 API</label>
+              <input v-model="form.fullMaterialApiUrl" type="text" class="input-field" />
+            </div>
+            <div class="field-group">
+              <label>获取条码 API</label>
+              <input v-model="form.codeCreateApiUrl" type="text" class="input-field" />
+            </div>
+            <div class="field-group">
+              <label>MES 数据上传 API</label>
+              <input v-model="form.mesPushApiUrl" type="text" class="input-field" />
+            </div>
+          </section>
 
-          <div class="field-groups-row">
+          <section class="config-section">
+            <div class="section-title">系统参数设置</div>
             <div class="field-group">
-              <label>设备编码 (deviceCode)</label>
-              <input v-model="form.deviceCode" type="text" class="input-field" />
+              <label>工序代码 (technicsProcessCode)</label>
+              <input v-model="form.technicsProcessCode" type="text" class="input-field" />
             </div>
             <div class="field-group">
-              <label>设备名称 (deviceName)</label>
-              <input v-model="form.deviceName" type="text" class="input-field" />
+              <label>工序名称 (technicsProcessName)</label>
+              <input v-model="form.technicsProcessName" type="text" class="input-field" />
             </div>
-          </div>
+            <div class="field-groups-row">
+              <div class="field-group">
+                <label>用户名 (userName)</label>
+                <input v-model="form.userName" type="text" class="input-field" />
+              </div>
+              <div class="field-group">
+                <label>用户账号 (userAccount)</label>
+                <input v-model="form.userAccount" type="text" class="input-field" />
+              </div>
+            </div>
+            <div class="field-groups-row">
+              <div class="field-group">
+                <label>设备编码 (deviceCode)</label>
+                <input v-model="form.deviceCode" type="text" class="input-field" />
+              </div>
+              <div class="field-group">
+                <label>设备名称 (deviceName)</label>
+                <input v-model="form.deviceName" type="text" class="input-field" />
+              </div>
+            </div>
+            <div class="field-group">
+              <label>日志保存路径 (后台机器)</label>
+              <input v-model="form.logSavePath" type="text" class="input-field" />
+            </div>
+            <div class="field-groups-row">
+              <div class="field-group">
+                <label>管理员账号</label>
+                <input v-model="form.adminUsername" type="text" class="input-field" />
+              </div>
+              <div class="field-group">
+                <label>管理员密码</label>
+                <input v-model="form.adminPassword" type="password" class="input-field" />
+              </div>
+            </div>
+          </section>
 
-          <div class="field-group">
-            <label>日志保存路径 (后台机器)</label>
-            <input v-model="form.logSavePath" type="text" class="input-field" />
-          </div>
-
-          <div class="field-groups-row">
+          <section class="config-section">
+            <div class="section-title">打印机参数设置</div>
             <div class="field-group">
-              <label>管理员账号</label>
-              <input v-model="form.adminUsername" type="text" class="input-field" />
+              <label>打印接口 URL</label>
+              <input v-model="form.printApiUrl" type="text" class="input-field" />
             </div>
-            <div class="field-group">
-              <label>管理员密码</label>
-              <input v-model="form.adminPassword" type="password" class="input-field" />
+            <div class="field-groups-row">
+              <div class="field-group">
+                <label>Zebra 打印机 IP</label>
+                <input v-model="form.printerIp" type="text" class="input-field" />
+              </div>
+              <div class="field-group">
+                <label>Zebra 端口</label>
+                <input v-model.number="form.printerPort" type="number" class="input-field" />
+              </div>
             </div>
-          </div>
+          </section>
         </div>
 
         <div class="modal-footer">
@@ -180,6 +199,26 @@ function handleCancel() {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  max-height: 70vh;
+  overflow: auto;
+}
+
+.config-section {
+  border: 1px solid rgba(100, 181, 246, 0.16);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: rgba(13, 17, 23, 0.45);
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #90caf9;
+  border-left: 3px solid #42a5f5;
+  padding-left: 8px;
 }
 
 .field-group {

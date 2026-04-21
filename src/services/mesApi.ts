@@ -38,7 +38,7 @@ export async function getOrderByProcess(config: AppConfig): Promise<GetOrderResp
 export async function getRouteList(config: AppConfig, routeCode: string, workSeqNo: string): Promise<GetRouteResponse> {
   const params: GetRouteRequest = {
     routeCode,
-    workSeqNo
+    workseqNo: workSeqNo
   }
   return postRequest<GetRouteResponse>(config.routeApiUrl, params)
 }
@@ -47,8 +47,8 @@ export async function completeCheckInput(config: AppConfig, data: CompleteCheckI
   return postRequest<any>(config.fullMaterialApiUrl, data)
 }
 
-export async function pushPackMessageToMes(_config: AppConfig, data: any[]): Promise<any> {
-  return postRequest<any>('/mes-push/api/ProduceMessage/PushPackMessageToMes', data)
+export async function pushPackMessageToMes(config: AppConfig, data: any[]): Promise<any> {
+  return postRequest<any>(config.mesPushApiUrl, data)
 }
 
 export async function createModulePackCode(config: AppConfig, data: ModulePackCodeCreateRequest): Promise<ModulePackCodeCreateResponse> {
